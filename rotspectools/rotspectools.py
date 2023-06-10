@@ -10,6 +10,7 @@ import pandas as pd
 import scienceplots
 from matplotlib.legend_handler import HandlerPatch
 from pandas import DataFrame
+from inspect import currentframe, getframeinfo
 
 mpl.rc("text", usetex=True)
 plt.style.use(["science", "ieee"])
@@ -21,7 +22,7 @@ class Experiment:
         num_lines: int,
         molecule_type: str,
         file_name: str,
-        file_path_res: str = "", 
+        file_path_res: str = "",
         file_path_lin: str = "",
         res_dataframe: DataFrame = pd.DataFrame(),
         lin_dataframe: DataFrame = pd.DataFrame(),
@@ -39,7 +40,8 @@ class Experiment:
         self.read_lin()
 
     def rel_file_path(self) -> str:
-        base_path = Path(__file__).parent
+        filename = getframeinfo(currentframe()).filename
+        base_path = Path(filename).resolve().parent
         file_name_res = self.file_name + ".res"
         file_name_lin = self.file_name + ".lin"
         self.file_path_res = (base_path / file_name_res).resolve()

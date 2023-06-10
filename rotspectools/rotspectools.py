@@ -1,4 +1,5 @@
 import math
+import sys
 from pathlib import Path
 from typing import Tuple
 
@@ -40,8 +41,7 @@ class Experiment:
         self.read_lin()
 
     def rel_file_path(self) -> str:
-        filename = getframeinfo(currentframe()).filename
-        base_path = Path(filename).resolve().parent
+        base_path = Path(sys.argv[0]).resolve().parent
         file_name_res = self.file_name + ".res"
         file_name_lin = self.file_name + ".lin"
         self.file_path_res = (base_path / file_name_res).resolve()

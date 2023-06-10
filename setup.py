@@ -23,12 +23,12 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
     description="Package for automating data analysis and visualization.",
+    url='https://github.com/djean032/rotspectools'
     entry_points={
         'console_scripts': [
             'rotspectools=rotspectools.cli:main',

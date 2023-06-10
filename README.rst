@@ -6,14 +6,12 @@ Rotational Spectroscopy Tools
 .. image:: https://img.shields.io/pypi/v/rotspectools.svg
         :target: https://pypi.python.org/pypi/rotspectools
 
-.. image:: https://img.shields.io/travis/djean032/rotspectools.svg
-        :target: https://travis-ci.com/djean032/rotspectools
-
 .. image:: https://readthedocs.org/projects/rotspectools/badge/?version=latest
         :target: https://rotspectools.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
 
-
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+        :target: https://github.com/psf/black
 
 
 Package for automating data analysis and visualization.

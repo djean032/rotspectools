@@ -1,5 +1,5 @@
 Welcome to Rotational Spectroscopy Tools's documentation!
-======================================
+=========================================================
 
 .. toctree::
    :maxdepth: 2

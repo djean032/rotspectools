@@ -36,7 +36,8 @@ Data Visualization
 ********************************
 * Generate data distribution plots of measured lines, with a-, b-, and c-type transitions differentiated by color. This visualization was inspired by Kisiel's AC.exe program and GLE script.
 
-* TODO
+TODO
+**********
 - Add in support for other types of molecules
 - Support presentation of predicted spectra using SPCAT's .cat file format
 - Add capability to use SPFIT/SPCAT as a backend to generate files/classes.

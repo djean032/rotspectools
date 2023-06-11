@@ -16,7 +16,9 @@ Rotational Spectroscopy Tools
         :target: https://github.com/psf/black
 
 
-Package for automating data analysis and visualization.
+Package for automating data analysis and presentation for rotational spectroscopy datasets generated using Pickett's SPFIT/SPCAT programs.
+
+Currently, it only supports simple asymmetrical rotors and the plotting of data distribution plots of measured spectral lines.
 
 
 * Free software: MIT license
@@ -25,13 +27,19 @@ Package for automating data analysis and visualization.
 
 Features
 --------
+* Data Analysis
+- Clean datasets by eliminating high error lines, at a specified threshold error.
+- Remove duplicate lines from SPFIT .lin files.
+
+* Data Visualization
+- Generate data distribution plots of measured lines, with a-, b-, and c-type transitions differentiated by color. This visualization was inspired by Kisiel's AC.exe program and GLE script.
 
 * TODO
+- Add in support for other types of molecules
+- Support presentation of predicted spectra using SPCAT's .cat file format
+- Add capability to use SPFIT/SPCAT as a backend to generate files/classes.
 
 Credits
 -------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+Thanks to the McMahon-Woods Research Group for continually breaking this tool and making it better.

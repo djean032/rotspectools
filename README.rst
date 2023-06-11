@@ -27,12 +27,14 @@ Currently, it only supports simple asymmetrical rotors and the plotting of data 
 
 Features
 --------
-* Data Analysis
-- Clean datasets by eliminating high error lines, at a specified threshold error.
-- Remove duplicate lines from SPFIT .lin files.
+Data Analysis
+#############
+* Clean datasets by eliminating high error lines, at a specified threshold error.
+* Remove duplicate lines from SPFIT .lin files.
 
-* Data Visualization
-- Generate data distribution plots of measured lines, with a-, b-, and c-type transitions differentiated by color. This visualization was inspired by Kisiel's AC.exe program and GLE script.
+Data Visualization
+##################
+* Generate data distribution plots of measured lines, with a-, b-, and c-type transitions differentiated by color. This visualization was inspired by Kisiel's AC.exe program and GLE script.
 
 * TODO
 - Add in support for other types of molecules

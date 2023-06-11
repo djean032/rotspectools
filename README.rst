@@ -2,6 +2,8 @@
 Rotational Spectroscopy Tools
 =============================
 
+.. image:: https://img.shields.io/badge/License-MIT-yellow.svg
+        :target: https://opensource.org/licenses/MIT
 
 .. image:: https://img.shields.io/pypi/v/rotspectools.svg
         :target: https://pypi.python.org/pypi/rotspectools

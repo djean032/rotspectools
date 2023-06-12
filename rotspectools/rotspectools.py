@@ -11,7 +11,6 @@ import pandas as pd
 import scienceplots
 from matplotlib.legend_handler import HandlerPatch
 from pandas import DataFrame
-from inspect import currentframe, getframeinfo
 
 mpl.rc("text", usetex=True)
 plt.style.use(["science", "ieee"])

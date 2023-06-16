@@ -260,11 +260,11 @@ class Experiment:
 
         return (df_ar, df_br, df_cr, df_ap, df_bp, df_cp, df_aq, df_bq, df_cq)
 
-    def get_IR(df: DataFrame) -> DataFrame:
+    def get_IR(self, df: DataFrame) -> DataFrame:
         df_IR = df.loc[df["Delta_v"] != 0]
         return df_IR
 
-    def get_rot(df: DataFrame) -> DataFrame:
+    def get_rot(self, df: DataFrame) -> DataFrame:
         df_rot = df.loc[df["Delta_v"] == 0]
         return df_rot
 
@@ -418,7 +418,7 @@ class Experiment:
             by=["Transition Type"], ascending=True
         )
         dataframes = self.split_branches()
-        dataframes = tuple(self.get_rot(x) for x in dataframes)
+        dataframes = tuple(map(self.get_rot, dataframes))
         fig, ax = plt.subplots(1, 2, figsize=(8, 4))
         for i in range(0, 2):
             condition = dataframes[i]["blend O-C/error"] >= 4
@@ -561,7 +561,7 @@ class Experiment:
             by=["Transition Type"], ascending=True
         )
         dataframes = self.split_branches()
-        dataframes = tuple(self.get_IR(x) for x in dataframes)
+        dataframes = tuple(map(self.get_IR, dataframes))
         fig, ax = plt.subplots(1, 2, figsize=(8, 4))
         for i in range(0, 2):
             condition = dataframes[i]["blend O-C/error"] >= 4

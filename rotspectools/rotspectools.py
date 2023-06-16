@@ -146,7 +146,9 @@ class Experiment:
             self.res_dataframe["Line Number"].str.contains("---", na=False)
         ].index[0]
         self.res_dataframe = self.res_dataframe.iloc[:last_row]
-        self.res_dataframe[self.res_dataframe["Error"] != "UNFITTD"]
+        self.res_dataframe = self.res_dataframe[
+            self.res_dataframe["Error"] != "UNFITTD"
+        ]
         self.delta_values()
         self.categorize_trans_type("Delta Ka", "Delta Kc")
         self.categorize_branch("Delta J")

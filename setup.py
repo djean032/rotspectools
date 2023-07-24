@@ -44,6 +44,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/djean032/rotspectools',
-    version='0.1.4',
+    version='0.1.9',
     zip_safe=False,
 )

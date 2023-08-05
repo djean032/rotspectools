@@ -1,0 +1,12 @@
+* Autocorrelations
+   * autocorrelation to detect impurities
+   * how to check?
+    * isotopic sub?
+      - tried with Ketene,
+    * start with pure isomers
+
+* Use SPFIT or NO?
+  * polynomial fit for series?
+  * use series to reduce likelihood of collisions with intense vibrational states
+  * combination differences?
+  * 

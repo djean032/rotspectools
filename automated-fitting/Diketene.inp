@@ -1,0 +1,50 @@
+         filtering (1/0):   1
+        frequency limits:   130000.0,360000.0
+        intensity cutoff:   1.E-9
+         echo file (1/0):   0
+------------------------------------------------
+       parent data file :   Diketene.asr
+intensity rel. to parent:   1.0
+line code (1-10)        :   1
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   Diketene_nu24.asr
+intensity rel. to parent:   0.53
+line code (1-10)        :   2
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   Diketene_2nu24.asr
+intensity rel. to parent:   0.28
+line code (1-10)        :   3
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   Diketene_nu16.asr
+intensity rel. to parent:   0.22
+line code (1-10)        :   4
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   Diketene_3nu24.asr
+intensity rel. to parent:   0.15
+line code (1-10)        :   5
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   Diketene_nu24_nu16.asr
+intensity rel. to parent:   0.11
+line code (1-10)        :   6
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   Diketene_nu23.asr
+intensity rel. to parent:   0.11
+line code (1-10)        :   7
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   Diketene_4nu24.asr
+intensity rel. to parent:   0.08
+line code (1-10)        :   8
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   Diketene_5nu24.asr
+intensity rel. to parent:   0.04
+line code (1-10)        :   9
+more data (1), end (0)  :   0
+------------------------------------------------

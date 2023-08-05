@@ -1,0 +1,83 @@
+         filtering (1/0):   1
+        frequency limits:   80000.0,750000.0
+        intensity cutoff:   1.E-15
+         echo file (1/0):   0
+------------------------------------------------
+       parent data file :   ketene_isomass1.cat
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass2.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   4
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass3.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   5
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass4.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   6
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass5.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   3
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass6.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   2
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass7.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   2
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass8.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   3
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass9.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   7
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass10.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   8
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass11.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   9
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass12.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   7
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass13.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   8
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass14.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   9
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass15.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   4
+more data (1), end (0)  :   1
+------------------------------------------------
+name of data file       :   ketene_isomass16.cat
+intensity rel. to parent:   0.0001
+line code (1-10)        :   5
+more data (1), end (0)  :   0
+------------------------------------------------

@@ -1,0 +1,254 @@
+C_____________________________________________________________________________
+C
+C  SVIEW_L -  DISPLAY AND MEASUREMENT PROGRAM FOR DIGITIZED SPECTRA in
+C
+C             1/ IFPAN binary format
+C             2/ two column frequency,intensity ASCII format
+C_____________________________________________________________________________
+C
+C
+C   SVIEW_L is part of the AABS package for Assignment and Analysis of 
+C   Broadband Spectra.  A brief description of the package is given in:
+C
+C     Z.Kisiel, L.Pszczolkowski, I.R.Medvedev, M.Winnewisser, F.C.De Lucia,
+C     E.Herbst, J.Mol.Spectrosc. 233,231-243(2005)
+C
+C   and this paper can be used to cite its use.  A summary of some of the more
+C   advanced applications of the AABS package is available in:
+C
+C     Z.Kisiel, L.Pszczolkowski, B.J.Drouin, C.S.Brauer, S.Yu, J.C.Pearson,
+C     I.R.Medvedev, S.Fortman, C.Neese, J.Mol.Spectrosc. 270,134-144(2012)
+c
+C
+C
+C   Version 11.III.2017                           ----- Zbigniew KISIEL -----
+C
+C                          __________________________________________________
+C                         | Institute of Physics, Polish Academy of Sciences |
+C                         | Al.Lotnikow 32/46, Warszawa, POLAND              |
+C                         |                             kisiel@ifpan.edu.pl  |
+C                         |     http://info.ifpan.edu.pl/~kisiel/prospe.htm  |
+C_________________________/--------------------------------------------------
+C
+C   SVIEW_L is a derivative of SVIEW for linked operation with the stick
+C   viewer ASCP_L.  Linked operation involves using a joint memory area 
+C   set up with ASCPEXCH.DLL
+C
+C   Notes below pertain in part to SVIEW-type standalone operation - check 
+C   the PROSPE webpage for current documentation on use of SVIEW_L within
+C   the AABS package
+C
+C   SVIEW_L allows input from binary spectral files in the IFPAN MMW format,
+C   as well as two column ASCII input.  Both formats are also supported on
+C   output.
+C
+C   Points in ASCII input do not have to be equidistant, program will 
+C   interpolate between those to an equally spaced grid based on 
+C   average point spacing found.
+C
+C   Spectra can be merged, smoothed, baselines can be subtracted.
+C
+C   Line measurements are available for single lines, doublets, and
+C   an automatic peakfinder is built in.
+C
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C
+C  Modification history:
+C
+C   31.3.95:  Elimination of crash on option XL for narrow spectra and of
+C             crash on evaluation of peak frequency for level signal
+C    6.6.95:  Change of peakfinder width with 0 not O
+C   31.8.95:  Addition of safety features on input and .FRE compatibility
+C  26.11.95:  Tweaking of screen refresh in LOOK
+C  11.02.97:  As above
+C   9.06.97:  Test for frequencies increasing from left to right
+C  27.03.01:  gle output
+C  24.04.01:  major reconstruction
+C   7.05.01:  more checks of ASCII input + debugging
+C  15.12.01:  improved subtraction and restore options + config. file
+C   5.03.02:  more CVF6 compliance, improved baseline subtr. and ASCII input
+C   3.01.03:  switch to QWIN graphics and an optional half-height screen 
+C  24.03.03:  display of spectral information
+C  30.07.03:  modifications for use with very long spectra
+C  14.08.03:  sorting out Window frame-size compatibility problems
+C  16.02.04:  compatibility of AUTOPK with long spectra
+C  25.05.04:  append option for spectra
+C   4.08.04:  enhanced peak measurement + incremental modifications
+C  26.08.04:  linked operation with ASCP = first SVIEW_L version
+C   8.10.04:  incremental modifications
+C  16.10.04:  option for background frequency synchronisation
+C  15.11.04:  scrolling outside the spectrum
+C  12.12.04:  line measurement and saving initiated from ASCP_l
+C  28.03.05:  cumulative modifications              
+C  28.09.05:  debugging + modifications
+C  31.10.05:  code modifications imposed by IVFortran and switch to AABS.CFG
+C   1.12.05:  debugging + enhancements: including calibration and ASCII output
+C   5.07.06:  mods of output actioned by F8 in ASCP_L
+C  19.03.07:  dynamic dimensioning
+C   2.07.07:  relative intensity with F8,F9,F10 in ASCP_L
+C  19.11.07:  marker modifications and cm-1 <-> MHz scale conversions
+C  11.12.07:  debugging of comparison of two spectra
+C  16.02.08:  switch to the compiled help file AABS_HELP.CHM
+C   1.07.08:  modification for thicker borders in Vista
+C  15.10.08:  misc. debugging and minor mods
+C  10.11.08:  gle output + other mods
+C  29.11.08:  enhancements to output actioned by F8+F9 in ASCP_L + derivatives
+C   2.05.09:  more modification options
+C  29.07.09:  4-byte Y-values in binary file standard and line blanking
+C   1.03.10:  debugging of LOOKFM interpolation and multiwindow operation
+C  16.03.10:  multiple corrections for work with high resolution cm-1 data
+C   2.04.10:  timestamp based rereading of the spectrum
+C  20.05.10:  reuse of legacy VKMST,VKMEND as VOLMIN,VOLMAX and intensity
+C             matching on the '&' operation
+C  26.06.10:  improvements to line blanking
+C  29.07.10:  various mods including append and frequency measurement options 
+C  23.05.11:  many tweaks: out of frequency display, R option, input, gle output
+C  12.07.11:  further mods to blanking and background subtraction
+C  30.09.11:  AUTO width mode for line measurement
+C  30.11.11:  inspection facilities for derived baseline
+C  29.06.12:  infrastructure for colour schemes + BW colour scheme
+C             major overhaul of keyboard input to stop 'leaking handles'
+C  23.09.12:  improved Y-axis zooming and ASCII output
+C  23.01.13:  elimination of PEEK keyboard input bug for special characters
+C  10.02.13:  distinct '0' action initiated by ASCP_L
+C   8.12.13:  corrected display for long pixel runs
+C  25.02.14:  option to change temperature for relative intensities (F10)
+C  30.07.14:  suboption M8, modified R option, modified F8,F9,F10 output
+C  13.08.14:  three state F7 option
+C  19.01.15:  modifications to gle output
+C  12.07.15:  enhancements to the F8,F9,F10 relative intensity procedure
+C  23.07.15:  ctrl P option for histogram mode in screen and gle spectrum
+C  24.11.15:  Y-axis amplification option and debugging
+C  25.06.16:  variable line thickness (for better screen grabs)
+C  11.03.17:  elimination of 4-byte saving bug
+C
+C-----------------------------------------------------------------------------
+C     I N S T A L L A T I O N:
+C-----------------------------------------------------------------------------
+C
+C     1/ place SVIEW_L.EXE and AABS.CFG in directory C:\ROT and make sure that
+C        the file ASCPEXCH.DLL which comes with ASCP_L is there
+C     2/ send a shortcut to SVIEW_L to the desktop (e.g. with Windows Explorer) 
+C     3/ add C:\ROT to the PATH if it is planned to launch from the command
+C        prompt
+C     4/ If on launching SVIEW_L you get the message "Msvcr71.DLL cannot be found"
+C        you then also need to download that file and place it in c:\ROT
+C
+C
+C-----------------------------------------------------------------------------
+C     S V I E W   A N D   W I N D O W S:
+C-----------------------------------------------------------------------------
+C
+C     Launch can be in any one of the standard modes, most useful of which are: 
+C     from an icon, by drag and drop onto an icon, and from the command line.
+C     My favoured way is actually to launch by drag and drop to an icon in the
+C     taskbar of my favourite file manager.
+C
+C     In Win95/98 it has been found useful to launch SVIEW from the command line, 
+C     after having moved to the directory which contains the required files.
+C     The current directory is assumed to be the default directory.
+C
+C     In Win2000/XP, irrespective of launch type, the system remembers the last
+C     directory in which SVIEW was used and assumes it as default.  If this
+C     directory is no longer to be worked on then it is necessary to
+C     navigate to the required directory using the FileSelect window.
+C
+C     For drag and drop operation the spectral file can be dragged
+C     onto the SVIEW icon and, on pressing ENTER in response to the filename
+C     question, the dragged file will be read in and processed as required.
+C
+C     All output files (processed spectrum, peakfinder, gle) are written to
+C     the directory from which the data file was read.
+C
+C
+C-----------------------------------------------------------------------------
+C    C O M P I L A T I O N:
+C-----------------------------------------------------------------------------
+C
+C    This version compiles with Intel Visual Fortran 9.0 to 12.x, although 
+C    only the most recent Fortran version is used routinely.
+C    Module names in USE statements have been changed from the Compaq DF names 
+C    (which still work) to IF names:
+C
+C    DFLIB->IFQWIN,  DFWIN->IFWIN,  DFMT->IFMT,  DFPORT->IFPORT
+C
+C    1. DFWINTY not necessary since USE IFWIN seems sufficient
+C    2. GETCHARQQ requires USE IFCORE instead of USE IFQWIN
+C    3. The USE of a module which USEs some IF modules eliminates the need to
+C       specify those modules again in a given program segment
+C    
+C
+C    Compilation is now to be for QWIN graphics - this necessitates explicit
+C    programming out of several unnecessary frills, but results in smoother
+C    launch of the program than is possible with the STANDARD graphics as used 
+C    previously
+C
+C
+C-------------------------------- 
+C    Command line compilation:
+C-------------------------------- 
+C    (no longer used but kept as an example - this does not produce
+C     the distributed version)
+C
+C    Simplest compilation for the local machine:
+C
+C        df -static -libs=qwin -fpscomp:filesfromcmd sview.for
+C
+C    Optimised compilation for any PENTIUM:
+C
+C        df -check:all -nodebug -traceback -arch=pn1 -tune=pn1
+C           -fast -static -libs=qwin -fpscomp:filesfromcmd sview.for
+C
+C    Other processor options are pn2,pn3,pn4,k6_2,k7
+C
+C-------------------------------------------------------- 
+C    Visual Studio compilation for Compaq Visual Fortran:
+C--------------------------------------------------------
+C
+C    FORTRAN:     /architecture:pn1 /compile_only /fpscomp:filesfromcmd  
+C                 /libs:qwin /nologo /optimize:3 /traceback /tune:pn1    
+C                 /warn:argument_checking /warn:unused                   
+C                 /module:"Debug/" /object:"Debug/" /static   
+C                
+C    LINK:        kernel32.lib ascpexch.lib /nologo /subsystem:windows    
+C                 /pdb:none /machine:IX86 /out:"Debug/SVIEW_L.exe"         
+C
+C    RESOURCES:   /l 0x409 /fo"sview_l.res" /d "_DEBUG"
+C
+C    In addition the compilation option /check:all may be used to catch out
+C    suspicious run-time conditions, but it is only recommended for debugging
+C
+C-------------------------------------------------------- 
+C    Visual Studio Net compilation for Intel Visual Fortran 9.1:
+C--------------------------------------------------------
+C
+C    FORTRAN:     /nologo /G5 /fpscomp:filesfromcmd /warn:unused 
+C                 /Qsave /module:"Debug/" /object:"Debug/" /traceback 
+C                 /libs:qwin /c /static
+C
+C    LINK         /OUT:"Debug/sview_l.exe" /NOLOGO /SUBSYSTEM:WINDOWS 
+C                 /MACHINE:IX86 kernel32.lib ascpexch.lib
+C
+C-------------------------------------------------------- 
+C    Visual Studio 2008 compilation for Intel Visual Fortran XE 12.0:
+C--------------------------------------------------------
+C
+C    FORTRAN:      /nologo /arch:IA32 /fpscomp:filesfromcmd /warn:unused 
+C                  /Qsave /module:"Debug/" /object:"Debug/" /traceback 
+C                  /libs:qwin /c
+C
+C    LINK:         /OUT:"Debug/sview_l.exe" /NOLOGO /MANIFEST:NO 
+C                  /SUBSYSTEM:WINDOWS 
+C                  /MACHINE:IX86 kernel32.lib ascpexch.lib
+C
+C    Notes:
+C
+C    1. the option /Qsave is the static memory option that previously
+C       used to be /static
+C    2. the option /arch:IA32 enforces compatibility down to PIII,
+C       otherwise PIV upwards is the default
+C       Setting in VS: Project->sview_l properties->Fortran->Code Generation
+C                      ->Enable Enhanced Instr Set->No enhanced instruction sets
+C                       
+C
+C/////////////////////////////////////////////////////////////////////////////

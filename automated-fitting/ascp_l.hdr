@@ -1,0 +1,399 @@
+C_____________________________________________________________________________
+C
+C   ASCP_L - STICK DIAGRAMS OF SPECTRAL PREDICTIONS read from files in
+C
+C            1/ .ASR format of ASROT
+C            2/ .CAT format of SPCAT
+C            3/ .FRE format of peakfinder in SVIEW
+C            4/ two column frequency-intensity format
+C_____________________________________________________________________________
+C                        
+C   ASCP_L is part of the AABS package for Assignment and Analysis of 
+C   Broadband Spectra.  A brief description of the package was first given in:
+C                        
+C     Z.Kisiel, L.Pszczolkowski, I.R.Medvedev, M.Winnewisser, F.C.De Lucia,
+C     E.Herbst, J.Mol.Spectrosc. 233,231-243(2005)
+C                        
+C   and that paper can be used to cite its use. 
+C                        
+C                        
+C   Version 14a.XII.2011                          ----- Zbigniew KISIEL -----
+C
+C                          __________________________________________________
+C                         | Institute of Physics, Polish Academy of Sciences |
+C                         | Al.Lotnikow 32/46, Warszawa, POLAND              |
+C                         |                             kisiel@ifpan.edu.pl  |
+C                         |     http://info.ifpan.edu.pl/~kisiel/prospe.htm  |
+C_________________________/--------------------------------------------------
+C
+C
+C   ASCP_L is a derivative of ASCP for linked operation with the spectral
+C   viewer SVIEW_L.  Linked operation involves using a joint memory area 
+C   set up with ASCPEXCH.DLL
+C
+C   Notes below pertain mostly to ASCP-type standalone operation - check 
+C   the PROSPE webpage for current documentation on use of ASCP_L within
+C   the AABS package
+C
+C-----------------------------------------------------------------------------
+C
+C     This program produces a fully scalable/scrollable stick diagram of
+C     spectral predictions made with program ASROT.
+C     The program can also display predictions from Pickett's program SPCAT
+C       1/ by reading .CAT files directly
+C       2/ by reading output from program PISORT, which allows conversion of
+C          .OUT files with modification of temperature, frequency sorting etc.
+C
+C     Principal features:
+C
+C     - up to MAXFIL data sets can be read in under manual or batch type
+C       control
+C     - concatenation of data from several files into one file is allowed,
+C       as well as reading in a mixture of .ASR and .CAT files
+C     - altogether up to MAXLIN lines may be read in
+C     - display can be: 1/ sticks
+C                       2/ simulated spectrum
+C                       3/ sticks+spectrum
+C                       4/ Loomis-Wood type diagram
+C     - numerous highlighting options are available to distinguish
+C       line subsets of interest
+C     - filtering is possible to exclude lines outside frequency limits
+C       or below an intensity cutoff
+C     - data from different files may be plotted in different line
+C       styles/colours and intensities may be scaled by separate
+C       population factors
+C     - each transition is fully annotated, and annotations are automatically
+C       displayed when the transition is selected with the cursor
+C     - various types of additional information on loaded transitions and
+C       on-line help are available
+C     - if LIST file produced by the SLIST program is available in the same
+C       directory as other input files then frequency ranges and names of 
+C       measured spectra are displayed.  If there is no LIST but SVIEW_L
+C       has been opened then the range of the viewed spectrum is displayed.
+C     - output of current display for use by the GLE program can be produced 
+C       (files xxx.GLE and xxxn.DAT) which gives a route to publication
+C       quality PostScript printouts
+C
+C     ASC/ASCP have been used in many investigations involving overlapped
+C     vibrational satellites, different isotopologues and complex nuclear
+C     quadrupole structure.
+C
+C     Publication quality diagrams can be obtained by direct GLE output.
+C     Additional flexibility is provided by the filtering option on input 
+C     and the postprocessing program ASRGLE.
+C
+C     Early stick diagrams produced in this way can be found in:
+C         JMS 184,150(1997) - CHF2Cl,
+C         JMS 189,228(1998) - CH3CCl3,
+C         CPL 276,202(1997) - N2...HCl and
+C         JCP 109,10263(1998) - CHCl=CHCl2
+C
+C     Summaries of applications and brief discussions of ASCP are given in the
+C     two papers listed below, which serve as citations of the use of
+C     this program:
+C 
+C     Z.Kisiel, E.Bialkowska-Jaworska, L.Pszczolkowski
+C                         J.Chem.Phys. 109,10263-10272(1998).
+C     Z.Kisiel, E.Bialkowska-Jaworska, L.Pszczolkowski
+C                         J.Mol.Spectrosc. 199,5-12(2000)
+C
+C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+C
+C     ASCP is a derivative of ASC which in turn started as ASPEC and
+C     used only the six asymmetric rotor quantum numbers per transition.
+C
+C  Modification history:
+C
+C     ca.86:  created on HP-150 (XT-compatible) for screen display and printout
+C             on paper ribbon using the HP Thinkjet - the first HP inkjet
+C             printer
+C      2.92:  change from mono MSF5.0 version to colour (routine COLBEE by
+C             L.Pszczolkowski)
+C   5.10.95:  selection of strongest line for first time display of overlaps,
+C             free format input of frequency limits
+C  30.01.96:  addition of CLOSE(2) statement
+C  23.10.96:  patch for input from file converted from SPCAT output
+C   7.01.97:  more fixes for operation on .ASR from .OUT files
+C  25.03.97:  echo file
+C   2.04.97:  default line colour and modified ',' marker option
+C  10.01.98:  creation of ASCP
+C  23.02.98:  modification to also read ASROT files
+C  16.12.98:  use of ANSI.SYS scrapped + port to MSFPS1.0 graphics
+C  16.01.99:  flexible frequency labels
+C   8.08.99:  readable input control file
+C   5.09.99:  graphics compatibility taken up to the level in V32
+C   9.08.00:  safeguards against crashing out in graphics mode on input
+C  24.08.00:  various incremental modifications + direct GLE output
+C  30.05.01:  conversion to CVF6.5 graphics and major overhaul
+C  24.10.01:  several small mods
+C   9.02.02:  configuration file for graphics + debugging
+C  27.12.02:  switch to QWIN graphics and an optional half-height screen 
+C   4.03.03:  simulation of spectral contour
+C  19.03.03:  information on recorded spectra if LIST file is available,
+C             use of own instead of WIN32 linestyles
+C   3.06.03:  enhancements to contour simulation
+C  14.08.03:  sorting out Window frame-size compatibility problems
+C  20.02.04:  data refresh option
+C  23.08.04:  linked operation with SVIEW
+C   8.12.04:  cumulative modifications
+C  31.12.04:  Loomis-Wood module
+C  11.02.05:  Gle output for the Loomis-Wood module
+C  24.03.05:  help screens updated + cumulative mods
+C  27.05.05:  misc. Loomis-Wood enhancements
+C   3.08.05:  debugging
+C  16.09.05:  thick line highlighting option and various LW modifications
+C  30.10.05:  code modifications imposed by IVFortran and switch to AABS.CFG
+C   9.12.05:  major overhaul including: FRE and two column (freq,intens) input, 
+C             LW J-sorting, scaled difference output
+C  10.10.06:  debugging, LW enhancements, modified F8 output
+C  27.01.07:  switch to global data declarations
+C  14.03.07:  partial dynamic dimensioning of the largest arrays
+C             triangle and spectrum versions of LW display
+C   5.07.07:  relative intensity with F8,F9,F10 and toggling Y-axis direction
+C  31.10.07:  marker modifications and cm-1 <-> MHz scale conversions
+C  28.02.08:  switch to the compiled help file AABS_HELP.CHM and debugging
+C  11.06.08:  file output of highlighted lines
+C   1.07.08:  modification for thicker borders in Vista
+C  19.08.08:  gle diagram of AABS-like two pane display of sticks+spectrum,
+C             INTADD operation on gle output of sticks, gle output unification
+C  23.01.09:  enhancements to F8+F9 options, more LW filtering & other mods
+C   9.02.09:  mods to LW gle output and restitution of tr-type highlighting
+C  28.07.09:  improved window positioning and new spectral standard
+C  10.11.09:  mods for large number of datasets
+C  22.03.10:  multiple corrections for work with high resolution cm-1 data
+C  29.07.10:  improved handling of .LIN files
+C  21.08.10:  enhancements in gle scripts for AABS and LW plots
+C   2.11.10:  debugging of frequency difference LW plots
+C  21.01.11:  split use of 2,3 keys
+C   7.04.11:  optional flags on the frequency axis
+C  22.05.11:  tweaks
+C  14.12.11:  comb mode
+C
+C
+C-----------------------------------------------------------------------------
+C     I N S T A L L A T I O N:
+C-----------------------------------------------------------------------------
+C
+C     1/ place ASCP_L.EXE, AABS.CFG and ASCPEXCH.DLL in directory C:\ROT
+C     2/ using Windows Explorer send a shortcut to ASCP_L to the desktop
+C     3/ add C:\ROT to the PATH if it is planned to launch from the command
+C        prompt
+C
+C-----------------------------------------------------------------------------
+C     A S C P   A N D   W I N D O W S:
+C-----------------------------------------------------------------------------
+C
+C     Launch can be in any one of the standard modes, most useful of which are: 
+C     from an icon, by drag and drop onto an icon, and from the command line.
+C     My favoured way is actually launch by drag and drop to an icon in the
+C     taskbar of my favourite file manager.
+C
+C     In Win95/98 it is best to launch ASCP from the command line, after having
+C     moved to the directory which contains the required files.  The current
+C     directory is assumed to be the default directory.
+C
+C     In Win2000/XP, irrespective of launch type, the system remembers the last
+C     directory in which ASCP was used and assumes it as default.  If this
+C     directory is no longer to be worked on then it is necessary to
+C     navigate to the required directory using the FileSelect window.
+C
+C     Drag and drop operation is possible on all three input file types, ie.
+C     .ASR, .CAT and .INP.  The file can be dragged onto the ASCP icon and,
+C     once file type option is set as necessary, the dragged file will
+C     be read in and processed as required.
+C
+C     Irrespective of the system the program assumes that the default
+C     directory for file names specified in the batch input .INP file is the
+C     directory containing that file.  The ECHO.ASC file, if specified, and
+C     the gle files will also end up in this directory.
+C
+C
+C-----------------------------------------------------------------------------
+C     U S E   O F   C O L O U R:
+C-----------------------------------------------------------------------------
+C
+C     Colour is used extensively to better distinguish
+C     band types and to mark transitions of interest.  Many of the colours
+C     are created by the program in its own colour pallette so
+C     its intended appearance should not change much with the colour depth
+C     setting of the video display (which should be at least 256 colours),
+C
+C     Widely differing colours are
+C     used to differentiate between a-,b- and c-type transitions, whereas
+C     for a given transition type different shades of the same colour
+C     differentiate between P- or R- and Q-type transitions.
+C
+C     Transitions can be highlighted on the basis of:
+C     1/ the same value of selected lower state quantum number
+C     2/ the same data set
+C     3/ the same transition type sequence
+C     Options 1/ and 2/ can be for the current or all data sets, option 3/ is
+C     operative for the dataset defined by the current line under the cursor
+C
+C     Several colour schemes of background/highlighting colours are available
+C     for use as required.
+C
+C
+C-----------------------------------------------------------------------------
+C     B A T C H   I N P U T:
+C-----------------------------------------------------------------------------
+C
+C     Batch input is controlled by entries in a special control file
+C     (recommended extension .INP) with the following contents:
+C
+C  ---- first column           ---- column 29
+C |                           |
+C          filtering (1/0):   1                                <- first line
+C         frequency limits:   FMIN,FMAX
+C         intensity cutoff:   SLIMIT
+C          echo file (1/0):   0
+C ------------------------------------------------
+C        parent data file :   PARENT.ASR
+C more data (1), end (0)  :   1
+C ------------------------------------------------
+C name of data file       :   STATEA.ASR
+C intensity rel. to parent:   RELINT
+C line code (1-10, or >10):   LSTYLE
+C more data (1), end (0)  :   1
+C ------------------------------------------------
+C .
+C . repeat as necessary and terminate input for the last data file as below
+C .
+C more data (1), end (0)  :   0
+C ------------------------------------------------
+C
+C
+C     It is best to use the SAMPLE.INP file from the PROSPE site as a template,
+C     and then:
+C
+C   - Fill in appropriate numerical values for FMIN, FMAX, SLIMIT,RELINT
+C     (floating point) and LSTYLE (integer)
+C   - PARENT.ASR and STATEA.ASR are specimen names of data files to be read
+C     in, these can also be .CAT files
+C   - RELINT is relative intensity to be used for scaling data relative
+C     to that in file PARENT.ASR
+C   - LSTYLE is line style to be used for plotting the scaled data file 
+C     using one of predefined colour/linestyle combinations (1-10)
+C     It is also possible to specify a linestyle index greater than 10, in 
+C     which case line format is:
+C line code (1-10, or >10):   LSTYLE,#RRGGBB
+C     where the LSTYLE value can be any number between 11 and 50, and is to
+C     be followed by a comma and a hexadecimal RGB colour value,
+C     The linestyle corresponding to this colour is worked out on the basis of
+C     resulting decimal GGRRBB value truncated to 10000. 
+C
+C   - if filtering is set to zero then all lines from data files are read in
+C     and the second,third,fourth control lines are ignored
+C   - FSTART,FEND are frequency limits
+C   - SLIMIT is the intensity cutoff, ie lower limit of intensity for
+C     lines to be read in
+C   - the echo file option allows generation of file ECHO.ASC containing
+C     all lines from input .ASR or .CAT files which satisfy the sort criteria.
+C     Note that what is echoed are complete unmodified lines from the input 
+C     files.
+C
+C
+C-----------------------------------------------------------------------------
+C    C O M P I L A T I O N:
+C-----------------------------------------------------------------------------
+C
+C    This version compiles with Intel Visual Fortran 9.0 to 12.x, although 
+C    only the most recent Fortran version is used routinely.
+C    Module names in USE statements have been changed from the Compaq DF names 
+C    (which still work) to IF names:
+C
+C    DFLIB->IFQWIN,  DFWIN->IFWIN
+C
+C    Note that GETCHARQQ now requires USE IFCORE instead of USE IFQWIN
+C
+C
+C    Compilation is now to be for QWIN graphics - this necessitates explicit
+C    programming out of several unnecessary frills, but results in smoother
+C    launch of the program than is possible with the STANDARD graphics as used 
+C    previously.
+C
+C-------------------------------- 
+C    Command line compilation:
+C-------------------------------- 
+C    (no longer used but kept as an example - this does not produce
+C     the distributed version)
+C
+C    Simplest compilation for the local machine:
+C
+C        df -static -libs=qwin -fpscomp:filesfromcmd ascp.for
+C
+C    Compilation for any PENTIUM:
+C
+C        df -static -libs=qwin -arch:pn1 -fpscomp:filesfromcmd ascp.for
+C
+C    Optimised compilation for Pentium III:
+C
+C        df -static -libs=qwin -fast -architecture:pn3 -tune:pn3
+C                                 -fpscomp:filesfromcmd ascp.for
+C
+C-------------------------------------------------------- 
+C    Visual Studio compilation for Compaq Visual Fortran:
+C--------------------------------------------------------
+C
+C    FORTRAN:     /architecture:pn1 /compile_only /fpscomp:filesfromcmd  
+C                 /libs:qwin /nologo /optimize:3 /traceback /tune:pn1    
+C                 /warn:argument_checking /warn:unused                   
+C                 /module:"Debug/" /object:"Debug/" /static   
+C                
+C    LINK:        kernel32.lib ascpexch.lib /nologo /subsystem:windows    
+C                 /pdb:none /machine:IX86 /out:"Debug/ASCP_l.exe"         
+C
+C    RESOURCES:   /l 0x409 /fo"ascp_l.res" /d "_DEBUG"
+C
+C-------------------------------------------------------- 
+C    Visual Studio Net compilation for Intel Visual Fortran:
+C--------------------------------------------------------
+C
+C    FORTRAN:     /nologo /G5 /fpscomp:filesfromcmd /warn:unused 
+C                 /Qsave /module:"Debug/" /object:"Debug/" /traceback 
+C                 /libs:qwin /c /static
+C
+C    LINK         /OUT:"Debug/ASCP_l.exe" /NOLOGO /SUBSYSTEM:WINDOWS 
+C                 /MACHINE:IX86 kernel32.lib ascpexch.lib
+C
+C
+C-------------------------------------------------------- 
+C    Visual Studio 2008 compilation for Intel Visual Fortran XE 12.0:
+C--------------------------------------------------------
+C
+C    FORTRAN:      /nologo /arch:IA32 /fpscomp:filesfromcmd /warn:unused 
+C                  /Qsave /module:"Debug/" /object:"Debug/" /traceback 
+C                  /libs:qwin /c
+C
+C    LINK:         /OUT:"Debug/ascp_l.exe" /NOLOGO /MANIFEST:NO 
+C                  /SUBSYSTEM:WINDOWS 
+C                  /MACHINE:IX86 kernel32.lib ascpexch.lib
+C
+C    Notes:
+C
+C    1. the option /Qsave is the static memory option that previously
+C       used to be /static
+C    2. the option /arch:IA32 enforces compatibility down to PIII,
+C       otherwise PIV upwards is the default
+C       Setting in VS: Project->ascp_l properties->Fortran->Code Generation
+C                      ->Enable Enhanced Instr Set->No enhanced instruction sets
+C                       
+C
+C-----------------------------------------------------------------------------
+C     K E Y   V A R I A B L E S:
+C-----------------------------------------------------------------------------
+C
+C
+C   Key counters and their standard maximum values:
+C
+c   NLINES - total number of lines in all datasets     MAXLIN = dynamic
+c    NLSET - number of datasets                        MAXFIL =     350
+c    NLIST - number of spectral segments               MAXSPE =    1000
+c   NFLAGS - number of frequecny flags                 MAXFLA =    1000
+c     NFIT - number of lines in the fitting file       MAXFIT = dynamic
+c   NSTRPS - number of strips in the LW display        MAXSTR =      51
+c     NFRE - number of peaks in the peakfinder file    MAXPK  = dynamic
+c    NSPEC - number of points in spectral simulation            dynamic
+c     NPTS - number of points in spectrum for LW display        dynamic
+c
+C/////////////////////////////////////////////////////////////////////////////

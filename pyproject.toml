@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rotspectools"
-version = "0.1.9"
+version = "0.1.10"
 description = ""
 authors = ["Dairen Jean"]
 license = "MIT"
@@ -22,3 +22,6 @@ black = "^23.3.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+excludes = [
+	"automated-fitting"
+]

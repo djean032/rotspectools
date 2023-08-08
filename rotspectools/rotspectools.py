@@ -47,11 +47,9 @@ class Experiment:
         self.file_path_lin = (base_path / file_name_lin).resolve()
 
     def read_lin(self) -> DataFrame:
-        line_width = len(str(self.num_lines)) + 1
         self.lin_dataframe = pd.read_fwf(
             self.file_path_lin,
             header=None,
-            skiprows=7,
             names=[
                 "J",
                 "Ka",
@@ -69,7 +67,7 @@ class Experiment:
                 "Max Error",
                 "Relative Weight",
             ],
-            widths=[line_width, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 16, 13, 10],
+            widths=[3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 16, 13, 10],
         )
 
     def clean_lin(self, threshold: float) -> DataFrame:
